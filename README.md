@@ -1,5 +1,5 @@
 # ngrx-project
 
 
-A simple Angular project to learn more about ngrx tec
+A simple Angular project to learn more about ngrx tech
 
