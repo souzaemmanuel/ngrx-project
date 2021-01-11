@@ -1,0 +1,14 @@
+[
+    {
+        "Title": "Check emails",
+        "IsCompleted": false
+    },
+    {
+        "Title": "Wash dishes",
+        "IsCompleted": false
+    },
+    {
+        "Title": "Took garbage out",
+        "IsCompleted": false
+    }
+]
