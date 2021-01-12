@@ -11,7 +11,6 @@ const reducer = createReducer(
   on(ToDoActions.CreateToDoAction, (state: ToDoState, todo: ToDo) => {
     return { ...state, ToDos: [...state.ToDos, todo], ToDoError: null };
   }),
-
   on(ToDoActions.SuccessGetToDoAction, (state: ToDoState, { payload }) => {
     return { ...state, ToDos: payload, ToDoError: null };
   }),

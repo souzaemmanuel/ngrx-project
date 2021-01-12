@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import * as ToDoActions from '../todo.action';
-import ToDo from '../todo.model';
-import ToDoState from '../todo.state';
+import ToDo from '../state/todo.model';
+import ToDoState from '../state/todo.state';
+import { ToDoFacade } from './../state/todo.facade';
 
 @Component({
   selector: 'app-to-do',
@@ -12,11 +11,24 @@ import ToDoState from '../todo.state';
   styleUrls: ['./to-do.component.css']
 })
 export class ToDoComponent implements OnInit {
-  constructor(private store: Store<{ todos: ToDoState }>) {
-    this.todo$ = store.pipe(select('todos'));
+  todo$: Observable<ToDoState>;
+  ToDoSubscription: Subscription;
+  ToDoList: ToDo[] = [];
+
+  Title: string = '';
+  IsCompleted: boolean = false;
+  todoError: Error = null;
+
+  constructor(private _todoFacade: ToDoFacade) {
+    this.todo$ = _todoFacade.todo$;
   }
 
   ngOnInit() {
+    
+    //Calling the facade method, to give all tasks
+    this._todoFacade.getAllTasks();
+
+    //Listening this observable, so that brings  error or tasks available
     this.ToDoSubscription = this.todo$
       .pipe(
         map(x => {
@@ -25,26 +37,27 @@ export class ToDoComponent implements OnInit {
         })
       )
       .subscribe();
-
-    this.store.dispatch(ToDoActions.BeginGetToDoAction());
   }
 
-  todo$: Observable<ToDoState>;
-  ToDoSubscription: Subscription;
-  ToDoList: ToDo[] = [];
-
-  Title: string = '';
-  IsCompleted: boolean = false;
-
-  todoError: Error = null;
-
+  /**
+   * Call facade method responsible to create task
+   */
   createToDo() {
     const todo: ToDo = { Title: this.Title, IsCompleted: this.IsCompleted };
-    this.store.dispatch(ToDoActions.BeginCreateToDoAction({ payload: todo }));
+    this._todoFacade.createToDo(todo);
+  }
+
+  /**
+   * Resets all fields in form
+   */
+  resetFields() {
     this.Title = '';
     this.IsCompleted = false;
   }
 
+  /**
+   * When component is destroyed, unsubscribe all observables
+   */
   ngOnDestroy() {
     if (this.ToDoSubscription) {
       this.ToDoSubscription.unsubscribe();
