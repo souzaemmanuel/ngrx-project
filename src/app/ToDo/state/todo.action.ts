@@ -1,5 +1,5 @@
 import { Update } from '@ngrx/entity';
-import { Action, createAction, props } from '@ngrx/store';
+import { createAction, props } from '@ngrx/store';
 import { ToDo } from './todo.model';
 
 export enum ActionTypes {

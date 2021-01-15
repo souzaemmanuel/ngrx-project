@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {
-  TodosState} from '../state'
+  TodosState
+} from '../state'
 import * as TodoActions from '../state/todo.action'
 import { ToDo } from '../state/todo.model';
 import { Store } from '@ngrx/store';
@@ -45,12 +46,14 @@ export class ToDoComponent implements OnInit {
     //check if form is valid
     if (!this.todoForm.valid) return;
 
-    const todo: ToDo = this.todoForm.value;
+    var todo: ToDo = this.todoForm.value;
 
     if (todo.id)
       await this._todoFacade.editTask(todo);
-    else
+    else {
+      todo = new ToDo(todo.text, todo.completed);
       await this._todoFacade.newTask(todo);
+    }
 
     //reseting fields
     this.todoForm.reset();
