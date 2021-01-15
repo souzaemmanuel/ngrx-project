@@ -1,58 +1,52 @@
-<div class="Container">
-  <h2>My wishlists:</h2>
-
-  <div *ngIf="todoError?.message">
-    <div class="alert alert-danger" role="alert" id="ToDoError">
-      Some error occurred. Please try again
-    </div>
+<div class="container">
+  <div class=row>
+    <h1>My Task List:</h1>
   </div>
 
-  <div *ngFor="let todo of ToDoList" class="ToDoList">
+  <ng-container *ngIf="(todo$|async) && (todo$ | async)">
     <div class="row">
-      <div class="col-md-2">Name:</div>
-      <div class="col-md-2 todoItem">{{ todo.Title }}</div>
-      <div class="col-md-2">IsCompleted:</div>
-      <div class="col-md-2 todoItem">{{ todo.IsCompleted }}</div>
+      <table class="table table-dark">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Is Completed?</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let todo of (todo$ | async)">
+            <th scope="row">{{todo.id}}</th>
+            <td>{{todo.text}}</td>
+            <td>{{todo.completed}}</td>
+            <td>
+              <div class="btn-group" role="group">
+                <button type="button" class="btn btn-{{todo.completed ? 'secondary' : 'success'  }}" (click)="checkTask(todo.id, todo.completed)"
+                  style="Width:80px;">{{todo.completed ? 'Uncheck' : 'Check'  }}</button>
+                <button type="button" (click)="removeTodo(todo.id)" class="btn btn-danger"
+                  style="Width:80px;">Remove</button>
+                <button type="button" class="btn btn-primary " (click)="loadTask(todo)"
+                  style="Width:80px;">Edit</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-  </div>
-</div>
 
-<hr />
-
-<div class="container form-group" style="margin: 10px;">
-  <h3>Create New Wishlist</h3>
-  <form (ngSubmit)="createToDo()">
     <div class="row">
-      <div class="form-group col-md-4">
-        <input
-          [(ngModel)]="Title"
-          placeholder="Enter your Wish"
-          class="form-control"
-          name="Title"
-          style="min-width: 150px;"
-        />
-      </div>
-
-      <div
-        class="col-md-2 form-check"
-        style="margin-top: 10px; margin-left: 30px;"
-      >
-        <input
-          type="checkbox"
-          class="form-check-input"
-          id="IsCompleted"
-          name="IsCompleted"
-          [(ngModel)]="IsCompleted"
-        />
-
-        <label for="IsCompleted" class="form-check-label">Completed?</label>
-      </div>
-
-      <div class="col-md-2">
-        <button type="submit" class="btn btn-primary" style="Width:70px;">
-          Add
-        </button>
-      </div>
+      <form [formGroup]="todoForm" (ngSubmit)="saveTodo()">
+        <div class="form-group">
+          <label for="name">Add new task</label>
+          <input formControlName="text" type="email" class="form-control" id="name" aria-describedby="emailHelp"
+            placeholder="Enter a task">
+        </div>
+        <div class="form-check">
+          <input formControlName="completed" type="checkbox" class="form-check-input" id="isCompleted">
+          <label class="form-check-label" for="isCompleted">Is Completed?</label>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Save</button>
+      </form>
     </div>
-  </form>
+  </ng-container>
 </div>

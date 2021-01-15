@@ -1,25 +1,23 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ToDoComponent } from './ToDo/Components/to-do.component';
-import { ToDoEffects } from './ToDo/state/todo.effects';
-import { ToDoReducer } from './ToDo/state/todo.reducer';
+import { ToDoComponent } from './ToDo/components/to-do.component';
 import { ToDoFacade } from './ToDo/state/todo.facade';
+import { reducers } from './ToDo/state';
 
 @NgModule({
   declarations: [AppComponent, ToDoComponent],
   imports: [
+    ReactiveFormsModule,
     BrowserModule,
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
-    StoreModule.forRoot({ todos: ToDoReducer }),
-    EffectsModule.forRoot([ToDoEffects])
+    StoreModule.forRoot(reducers),
   ],
   providers: [ToDoFacade],
   bootstrap: [AppComponent]

@@ -1,4 +1,9 @@
-export default class ToDo {
-  Title: string;
-  IsCompleted: boolean;
+import { EntityState } from '@ngrx/entity';
+export interface ToDo {
+  id: number;
+  completed: boolean;
+  text: string;  
+}
+export interface ToDos {
+  todos: EntityState<ToDo>;
 }

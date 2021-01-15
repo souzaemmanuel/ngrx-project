@@ -1,31 +1,65 @@
-import { Action, createReducer, on } from '@ngrx/store';
-import * as ToDoActions from './todo.action';
-import ToDo from './todo.model';
-import ToDoState, { initializeState } from './todo.state';
+import { createEntityAdapter, EntityAdapter, EntityState } from '@ngrx/entity';
+import { ToDo } from './todo.model';
+import { ActionTypes, TodoActions } from './todo.action';
 
-const initialState = initializeState();
+export interface State extends EntityState<ToDo> { }
+export const adapter: EntityAdapter<ToDo> = createEntityAdapter<ToDo>();
+export let initialState: State = adapter.getInitialState();
 
-const reducer = createReducer(
-  initialState,
-  on(ToDoActions.GetToDoAction, state => state),
-  on(ToDoActions.CreateToDoAction, (state: ToDoState, todo: ToDo) => {
-    return { ...state, ToDos: [...state.ToDos, todo], ToDoError: null };
-  }),
-  on(ToDoActions.SuccessGetToDoAction, (state: ToDoState, { payload }) => {
-    return { ...state, ToDos: payload, ToDoError: null };
-  }),
-  on(ToDoActions.SuccessCreateToDoAction, (state: ToDoState, { payload }) => {
-    return { ...state, ToDos: [...state.ToDos, payload], ToDoError: null };
-  }),
-  on(ToDoActions.ErrorToDoAction, (state: ToDoState, error: Error) => {
-    console.error(error);
-    return { ...state, ToDoError: error };
-  })
-);
+initialState = adapter.addMany([
+  { id: 1, text: 'Check emails 📧', completed: true },
+  { id: 2, text: 'Attend meetings 📆', completed: true },
+  { id: 3, text: 'Took garbage out 😋', completed: false },
+  { id: 4, text: '🤔 Learn ngrx 🤯', completed: false },
+  { id: 5, text: 'Do not forget to thank Lukasz for being patient with me 😂😵', completed: false },
+], initialState);
 
-export function ToDoReducer(
-  state: ToDoState | undefined,
-  action: Action
-): ToDoState {
-  return reducer(state, action);
+export function reducer(
+  state = initialState,
+  action: TodoActions
+): State {
+  switch (action.type) {
+    case ActionTypes.AddTodo: {
+      return adapter.addOne(action.payload.todo, state);
+    }
+
+    case ActionTypes.AddTodos: {
+      return adapter.addMany(action.payload.todos, state);
+    }
+
+    case ActionTypes.UpdateTodo: {
+      return adapter.updateOne(action.payload.todo, state);
+    }
+
+    case ActionTypes.UpdateTodos: {
+      return adapter.updateMany(action.payload.todos, state);
+    }
+
+    case ActionTypes.DeleteTodo: {
+      return adapter.removeOne(action.payload.id, state);
+    }
+
+    case ActionTypes.DeleteTodos: {
+      return adapter.removeMany(action.payload.ids, state);
+    }
+
+    case ActionTypes.LoadTodos: {
+      return adapter.addAll(action.payload.todos, state);
+    }
+
+    case ActionTypes.ClearTodos: {
+      return adapter.removeAll(state);
+    }
+
+    default: {
+      return state;
+    }
+  }
 }
+
+export const {
+  selectIds,
+  selectEntities,
+  selectAll,
+  selectTotal,
+} = adapter.getSelectors();
