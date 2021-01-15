@@ -1,6 +1,8 @@
 import { createEntityAdapter, EntityAdapter, EntityState } from '@ngrx/entity';
 import { ToDo } from './todo.model';
-import { ActionTypes, TodoActions } from './todo.action';
+import { ActionTypes } from './todo.action';
+import * as TodoActions from './todo.action';
+import { createReducer, on } from '@ngrx/store';
 
 export interface State extends EntityState<ToDo> { }
 export const adapter: EntityAdapter<ToDo> = createEntityAdapter<ToDo>();
@@ -14,48 +16,22 @@ initialState = adapter.addMany([
   { id: 5, text: 'Do not forget to thank Lukasz for being patient with me 😂😵', completed: false },
 ], initialState);
 
-export function reducer(
-  state = initialState,
-  action: TodoActions
-): State {
-  switch (action.type) {
-    case ActionTypes.AddTodo: {
-      return adapter.addOne(action.payload.todo, state);
-    }
+export const reducer = createReducer(
+  initialState,
+  on(TodoActions.AddTodo,
+    (state, action) => adapter.addOne(action.todo, state)
+  ),
+  on(TodoActions.UpdateTodo,
+    (state, action) => adapter.updateOne(action.todo, state)
+  ),
+  on(TodoActions.DeleteTodo,
+    (state, action) => adapter.removeOne(action.id, state)
+  ),
+  on(TodoActions.LoadTodos,
+    (state, action) => adapter.setAll(action.todos, state)
+  ),
+);
 
-    case ActionTypes.AddTodos: {
-      return adapter.addMany(action.payload.todos, state);
-    }
-
-    case ActionTypes.UpdateTodo: {
-      return adapter.updateOne(action.payload.todo, state);
-    }
-
-    case ActionTypes.UpdateTodos: {
-      return adapter.updateMany(action.payload.todos, state);
-    }
-
-    case ActionTypes.DeleteTodo: {
-      return adapter.removeOne(action.payload.id, state);
-    }
-
-    case ActionTypes.DeleteTodos: {
-      return adapter.removeMany(action.payload.ids, state);
-    }
-
-    case ActionTypes.LoadTodos: {
-      return adapter.addAll(action.payload.todos, state);
-    }
-
-    case ActionTypes.ClearTodos: {
-      return adapter.removeAll(state);
-    }
-
-    default: {
-      return state;
-    }
-  }
-}
 
 export const {
   selectIds,

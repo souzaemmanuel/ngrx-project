@@ -17,7 +17,7 @@ export class ToDoFacade {
     }
 
     public async newTask(todo: ToDo) {
-        this._store.dispatch(new TodoActions.AddTodo({ todo }))
+        this._store.dispatch(TodoActions.AddTodo({ todo }))
         return;
     }
 
@@ -28,7 +28,7 @@ export class ToDoFacade {
                 completed: !completed,
             },
         }
-        this._store.dispatch(new TodoActions.UpdateTodo({ todo }))
+        this._store.dispatch(TodoActions.UpdateTodo({ todo }))
     }
 
     public async editTask(task: ToDo) {
@@ -40,11 +40,11 @@ export class ToDoFacade {
             },
         }
 
-        this._store.dispatch(new TodoActions.UpdateTodo({ todo }));
+        this._store.dispatch(TodoActions.UpdateTodo({ todo }));
         return;
     }
 
     public async  removeTodo(id) {
-        this._store.dispatch(new TodoActions.DeleteTodo({ id }))
+        this._store.dispatch(TodoActions.DeleteTodo({ id }))
     }
 }

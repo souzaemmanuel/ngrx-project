@@ -78,6 +78,6 @@ export class ToDoComponent implements OnInit {
    * @param id - task id
    */
   public removeTodo(id) {
-    this._store.dispatch(new TodoActions.DeleteTodo({ id }))
+    this._store.dispatch(TodoActions.DeleteTodo({ id }))
   }
 }
