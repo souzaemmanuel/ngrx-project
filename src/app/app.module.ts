@@ -8,6 +8,10 @@ import { AppComponent } from './app.component';
 import { ToDoComponent } from './ToDo/components/to-do.component';
 import { ToDoFacade } from './ToDo/state/todo.facade';
 import { reducers } from './ToDo/state';
+import { reducer } from './ToDo/state/todo.reducer';
+import { ToDoHttpService } from './ToDo/state/todo.httpservice';
+import { ToDoEffects } from './ToDo/state/todo.effects';
+import { EffectsModule } from '@ngrx/effects';
 
 @NgModule({
   declarations: [AppComponent, ToDoComponent],
@@ -18,8 +22,10 @@ import { reducers } from './ToDo/state';
     FormsModule,
     HttpClientModule,
     StoreModule.forRoot(reducers),
+    StoreModule.forFeature('todos', reducer),
+    EffectsModule.forRoot([ToDoEffects])
   ],
-  providers: [ToDoFacade],
+  providers: [ToDoFacade, ToDoHttpService, ToDoEffects],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

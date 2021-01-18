@@ -31,6 +31,12 @@ export class ToDoComponent implements OnInit {
   }
 
   public ngOnInit() {
+    this._todoFacade.getTasks();
+
+    this.buildForm();
+  }
+
+  buildForm() {
     this.todoForm = this._formBuilder.group({
       id: [null],
       text: [, Validators.compose([Validators.required])],

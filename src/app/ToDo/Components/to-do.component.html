@@ -2,7 +2,9 @@
   <div class=row>
     <h1>My Task List:</h1>
   </div>
-
+  {{
+  (todo$|async)
+  | json}}
   <ng-container *ngIf="(todo$|async) && (todo$ | async)">
     <div class="row">
       <table class="table table-dark">
@@ -21,8 +23,9 @@
             <td>{{todo.completed}}</td>
             <td>
               <div class="btn-group" role="group">
-                <button type="button" class="btn btn-{{todo.completed ? 'secondary' : 'success'  }}" (click)="checkTask(todo.id, todo.completed)"
-                  style="Width:80px;">{{todo.completed ? 'Uncheck' : 'Check'  }}</button>
+                <button type="button" class="btn btn-{{todo.completed ? 'secondary' : 'success'  }}"
+                  (click)="checkTask(todo.id, todo.completed)" style="Width:80px;">{{todo.completed ? 'Uncheck' :
+                  'Check' }}</button>
                 <button type="button" (click)="removeTodo(todo.id)" class="btn btn-danger"
                   style="Width:80px;">Remove</button>
                 <button type="button" class="btn btn-primary " (click)="loadTask(todo)"
