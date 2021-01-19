@@ -1,31 +1,37 @@
-import { Action, createReducer, on } from '@ngrx/store';
-import * as ToDoActions from './todo.action';
-import ToDo from './todo.model';
-import ToDoState, { initializeState } from './todo.state';
+import { createEntityAdapter, EntityAdapter, EntityState } from '@ngrx/entity';
+import { ToDo } from './todo.model';
+import * as TodoActions from './todo.action';
+import { createReducer, on } from '@ngrx/store';
 
-const initialState = initializeState();
+export interface State extends EntityState<ToDo> { }
+export const adapter: EntityAdapter<ToDo> = createEntityAdapter<ToDo>();
+export let initialState: State = adapter.getInitialState();
 
-const reducer = createReducer(
+export const reducer = createReducer(
   initialState,
-  on(ToDoActions.GetToDoAction, state => state),
-  on(ToDoActions.CreateToDoAction, (state: ToDoState, todo: ToDo) => {
-    return { ...state, ToDos: [...state.ToDos, todo], ToDoError: null };
-  }),
-  on(ToDoActions.SuccessGetToDoAction, (state: ToDoState, { payload }) => {
-    return { ...state, ToDos: payload, ToDoError: null };
-  }),
-  on(ToDoActions.SuccessCreateToDoAction, (state: ToDoState, { payload }) => {
-    return { ...state, ToDos: [...state.ToDos, payload], ToDoError: null };
-  }),
-  on(ToDoActions.ErrorToDoAction, (state: ToDoState, error: Error) => {
+  on(TodoActions.LoadTodos, state => state),
+  on(TodoActions.LoadTodosSuccess,
+    (state, action) => adapter.setAll(action.todos, state)
+  ),
+  on(TodoActions.AddTodo,
+    (state, action) => adapter.addOne(action.todo, state)
+  ),
+  on(TodoActions.UpdateTodo,
+    (state, action) => adapter.updateOne(action.todo, state)
+  ),
+  on(TodoActions.DeleteTodo,
+    (state, action) => adapter.removeOne(action.id, state)
+  ),
+  on(TodoActions.HttpErrorResponse, (state, error: Error) => {
     console.error(error);
     return { ...state, ToDoError: error };
   })
 );
 
-export function ToDoReducer(
-  state: ToDoState | undefined,
-  action: Action
-): ToDoState {
-  return reducer(state, action);
-}
+
+export const {
+  selectIds,
+  selectEntities,
+  selectAll,
+  selectTotal,
+} = adapter.getSelectors();

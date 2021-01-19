@@ -1,66 +1,65 @@
 import { Component, OnInit } from '@angular/core';
+import { ToDo } from '../state/todo.model';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ToDoFacade } from '../state/todo.facade';
 import { Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
-import ToDo from '../state/todo.model';
-import ToDoState from '../state/todo.state';
-import { ToDoFacade } from './../state/todo.facade';
 
 @Component({
   selector: 'app-to-do',
-  templateUrl: './to-do.component.html',
-  styleUrls: ['./to-do.component.css']
+  templateUrl: './to-do.component.html'
 })
 export class ToDoComponent implements OnInit {
-  todo$: Observable<ToDoState>;
-  ToDoSubscription: Subscription;
-  ToDoList: ToDo[] = [];
 
-  Title: string = '';
-  IsCompleted: boolean = false;
-  todoError: Error = null;
+  public todo$: Observable<ToDo[]> = this.todoFacade.todo$;
+  public todoForm: FormGroup;
+  public toDoSubscription: Subscription;
 
-  constructor(private _todoFacade: ToDoFacade) {
-    this.todo$ = _todoFacade.todo$;
+  constructor(
+    private readonly todoFacade: ToDoFacade,
+    private readonly formBuilder: FormBuilder) {
   }
 
-  ngOnInit() {
+  public ngOnInit(): void {
+    this.todoFacade.getTasks();
+    this.buildForm();
+  }
+
+  public loadTask(task: ToDo): void {
+    this.todoForm.patchValue(task);
+  }
+
+  private buildForm() {
+    this.todoForm = this.formBuilder.group({
+      id: [null],
+      text: [, Validators.compose([Validators.required])],
+      completed: [false],
+    });
+  }
+
+  public saveTask() : void {
     
-    //Calling the facade method, to give all tasks
-    this._todoFacade.getAllTasks();
+    //check if form is valid
+    if (!this.todoForm.valid) return;
 
-    //Listening this observable, so that brings  error or tasks available
-    this.ToDoSubscription = this.todo$
-      .pipe(
-        map(x => {
-          this.ToDoList = x.ToDos;
-          this.todoError = x.ToDoError;
-        })
-      )
-      .subscribe();
-  }
-
-  /**
-   * Call facade method responsible to create task
-   */
-  createToDo() {
-    const todo: ToDo = { Title: this.Title, IsCompleted: this.IsCompleted };
-    this._todoFacade.createToDo(todo);
-  }
-
-  /**
-   * Resets all fields in form
-   */
-  resetFields() {
-    this.Title = '';
-    this.IsCompleted = false;
-  }
-
-  /**
-   * When component is destroyed, unsubscribe all observables
-   */
-  ngOnDestroy() {
-    if (this.ToDoSubscription) {
-      this.ToDoSubscription.unsubscribe();
+    if (this.todoForm.value.id)
+      this.todoFacade.editTask(this.todoForm.value);
+    else {
+      this.todoFacade.newTask(new ToDo(this.todoForm.value.text, this.todoForm.value.completed));
     }
+
+    //reseting fields
+    this.todoForm.reset();
+  }
+
+  public checkOrUnCheckTask(id, completed) : void{
+    this.todoFacade.checkTask(id, completed);
+  }
+
+  public editTask(task: ToDo): void {
+    this.todoFacade.editTask(task);
+  }
+
+  public removeTodo(taskId): void {
+    this.todoFacade.removeTodo(taskId);
   }
 }

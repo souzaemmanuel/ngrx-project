@@ -1,28 +1,29 @@
+import { Update } from '@ngrx/entity';
 import { createAction, props } from '@ngrx/store';
-import ToDo from './todo.model';
+import { ToDo } from './todo.model';
 
-export const GetToDoAction = createAction('[ToDo] - Get ToDo');
-
-export const CreateToDoAction = createAction(
-  '[ToDo] - Create ToDo',
-  props<ToDo>()
+export const LoadTodos = createAction(
+  '[Todo] Load Todos'
 );
 
-export const BeginGetToDoAction = createAction('[ToDo] - Begin Get ToDo');
-
-export const SuccessGetToDoAction = createAction(
-  '[ToDo] - Sucess Get ToDo',
-  props<{ payload: ToDo[] }>()
+export const LoadTodosSuccess = createAction(
+  '[Todo] Success to Load Todos',
+  props<{ todos: ToDo[] }>()
 );
 
-export const BeginCreateToDoAction = createAction(
-  '[ToDo] - Begin Create ToDo',
-  props<{ payload: ToDo }>()
+export const AddTodo = createAction(
+  '[Todo] Add Todo',
+  props<{ todo: ToDo }>()
 );
 
-export const SuccessCreateToDoAction = createAction(
-  '[ToDo] - Sucess Create ToDo',
-  props<{ payload: ToDo }>()
+export const UpdateTodo = createAction(
+  '[Todo] Update Todo',
+  props<{ todo: Update<ToDo> }>()
 );
 
-export const ErrorToDoAction = createAction('[ToDo] - Error', props<Error>());
+export const DeleteTodo = createAction(
+  '[Todo] Delete Todo',
+  props<{ id: number }>()
+);
+
+export const HttpErrorResponse = createAction('[ToDo] - Error', props<Error>());

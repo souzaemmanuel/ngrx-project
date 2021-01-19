@@ -1,14 +1,7 @@
 [
-    {
-        "Title": "Check emails",
-        "IsCompleted": false
-    },
-    {
-        "Title": "Wash dishes",
-        "IsCompleted": false
-    },
-    {
-        "Title": "Took garbage out",
-        "IsCompleted": false
-    }
+  { "id": 1, "text": "Check emails 📧", "completed": true },
+  { "id": 2, "text": "Attend meetings 📆", "completed": true },
+  { "id": 3, "text": "Took garbage out 😋", "completed": false },
+  { "id": 4, "text": "🤔 Learn ngrx 🤯", "completed": false },
+  { "id": 5, "text": "Do not forget to thank Lukasz for being patient with me 😂😵", "completed": false }
 ]
