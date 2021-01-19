@@ -9,7 +9,7 @@ import { ToDoComponent } from './ToDo/components/to-do.component';
 import { ToDoFacade } from './ToDo/state/todo.facade';
 import { reducers } from './ToDo/state';
 import { reducer } from './ToDo/state/todo.reducer';
-import { ToDoHttpService } from './ToDo/state/todo.httpservice';
+import { TodoService } from './ToDo/state/todo.service';
 import { ToDoEffects } from './ToDo/state/todo.effects';
 import { EffectsModule } from '@ngrx/effects';
 
@@ -25,7 +25,7 @@ import { EffectsModule } from '@ngrx/effects';
     StoreModule.forFeature('todos', reducer),
     EffectsModule.forRoot([ToDoEffects])
   ],
-  providers: [ToDoFacade, ToDoHttpService, ToDoEffects],
+  providers: [ToDoFacade, TodoService, ToDoEffects],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

@@ -1,10 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  TodosState
-} from '../state'
-import * as TodoActions from '../state/todo.action'
 import { ToDo } from '../state/todo.model';
-import { Store } from '@ngrx/store';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToDoFacade } from '../state/todo.facade';
 import { Observable, Subscription } from 'rxjs';
@@ -15,78 +10,56 @@ import { Observable, Subscription } from 'rxjs';
 })
 export class ToDoComponent implements OnInit {
 
-  public todo$: Observable<any>;
+  public todo$: Observable<ToDo[]> = this.todoFacade.todo$;
   public todoForm: FormGroup;
   public toDoSubscription: Subscription;
 
-  public loadTask(task: ToDo) {
-    this.todoForm.patchValue(task);
-  }
-
   constructor(
-    private _todoFacade: ToDoFacade,
-    private _store: Store<TodosState>,
-    private _formBuilder: FormBuilder) {
-    this.todo$ = _todoFacade.todo$;
+    private readonly todoFacade: ToDoFacade,
+    private readonly formBuilder: FormBuilder) {
   }
 
-  public ngOnInit() {
-    this._todoFacade.getTasks();
-
+  public ngOnInit(): void {
+    this.todoFacade.getTasks();
     this.buildForm();
   }
 
-  buildForm() {
-    this.todoForm = this._formBuilder.group({
+  public loadTask(task: ToDo): void {
+    this.todoForm.patchValue(task);
+  }
+
+  private buildForm() {
+    this.todoForm = this.formBuilder.group({
       id: [null],
       text: [, Validators.compose([Validators.required])],
       completed: [false],
     });
   }
 
-  /**
-   * Adding or editing a task
-   */
-  public async saveTodo() {
-
+  public saveTask() : void {
+    
     //check if form is valid
     if (!this.todoForm.valid) return;
 
-    var todo: ToDo = this.todoForm.value;
-
-    if (todo.id)
-      await this._todoFacade.editTask(todo);
+    if (this.todoForm.value.id)
+      this.todoFacade.editTask(this.todoForm.value);
     else {
-      todo = new ToDo(todo.text, todo.completed);
-      await this._todoFacade.newTask(todo);
+      this.todoFacade.newTask(new ToDo(this.todoForm.value.text, this.todoForm.value.completed));
     }
 
     //reseting fields
     this.todoForm.reset();
   }
 
-  /**
-   * Marking task with check or un-check
-   * @param id 
-   * @param completed 
-   */
-  public checkTask(id, completed) {
-    this._todoFacade.checkTask(id, completed);
+  public checkOrUnCheckTask(id, completed) : void{
+    this.todoFacade.checkTask(id, completed);
   }
 
-  /**
-   * Editing some task
-   * @param task - task data
-   */
-  public editTask(task: ToDo) {
-    this._todoFacade.editTask(task);
+  public editTask(task: ToDo): void {
+    this.todoFacade.editTask(task);
   }
 
-  /**
-   * Removing task, by id
-   * @param id - task id
-   */
-  public removeTodo(id) {
-    this._store.dispatch(TodoActions.DeleteTodo({ id }))
+  public removeTodo(taskId): void {
+    this.todoFacade.removeTodo(taskId);
   }
 }

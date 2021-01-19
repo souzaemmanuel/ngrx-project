@@ -2,9 +2,6 @@
   <div class=row>
     <h1>My Task List:</h1>
   </div>
-  {{
-  (todo$|async)
-  | json}}
   <ng-container *ngIf="(todo$|async) && (todo$ | async)">
     <div class="row">
       <table class="table table-dark">
@@ -24,7 +21,7 @@
             <td>
               <div class="btn-group" role="group">
                 <button type="button" class="btn btn-{{todo.completed ? 'secondary' : 'success'  }}"
-                  (click)="checkTask(todo.id, todo.completed)" style="Width:80px;">{{todo.completed ? 'Uncheck' :
+                  (click)="checkOrUnCheckTask(todo.id, todo.completed)" style="Width:80px;">{{todo.completed ? 'Uncheck' :
                   'Check' }}</button>
                 <button type="button" (click)="removeTodo(todo.id)" class="btn btn-danger"
                   style="Width:80px;">Remove</button>
@@ -38,7 +35,7 @@
     </div>
 
     <div class="row">
-      <form [formGroup]="todoForm" (ngSubmit)="saveTodo()">
+      <form [formGroup]="todoForm" (ngSubmit)="saveTask()">
         <div class="form-group">
           <label for="name">Add new task</label>
           <input formControlName="text" type="email" class="form-control" id="name" aria-describedby="emailHelp"

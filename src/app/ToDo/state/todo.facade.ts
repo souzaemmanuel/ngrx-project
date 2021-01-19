@@ -10,33 +10,30 @@ import * as  fromStore from "./todo.selector";
 @Injectable()
 export class ToDoFacade {
 
-    public todo$: Observable<any>;
-    // todo$: Observable<any[]> = this.store.select(state => state.todos, map(res => {todoEntity.selectAll}));
+    public todo$: Observable<ToDo[]> = this.store.pipe(select('todos'), map(todoEntity.selectAll));
 
-    constructor(private _store: Store<TodosState>, private store: Store<{ todos: ToDo[] }>) {
-        this.todo$ = _store.pipe(select('todos'), map(todoEntity.selectAll));
+    constructor(private store: Store<TodosState>) {
     }
 
-    public async getTasks() {
-        this._store.dispatch(TodoActions.LoadTodos())
+    public getTasks() {
+        this.store.dispatch(TodoActions.LoadTodos())
     }
 
-    public async newTask(todo: ToDo) {
-        this._store.dispatch(TodoActions.AddTodo({ todo }))
-        return;
+    public newTask(todo: ToDo) {
+        this.store.dispatch(TodoActions.AddTodo({ todo }))
     }
 
-    public async checkTask(id, completed) {
+    public checkTask(id, completed) {
         const todo = {
             id,
             changes: {
                 completed: !completed,
             },
         }
-        this._store.dispatch(TodoActions.UpdateTodo({ todo }))
+        this.store.dispatch(TodoActions.UpdateTodo({ todo }))
     }
 
-    public async editTask(task: ToDo) {
+    public editTask(task: ToDo) {
         const todo = {
             id: task.id,
             changes: {
@@ -45,11 +42,10 @@ export class ToDoFacade {
             },
         }
 
-        this._store.dispatch(TodoActions.UpdateTodo({ todo }));
-        return;
+        this.store.dispatch(TodoActions.UpdateTodo({ todo }));
     }
 
-    public async removeTodo(id) {
-        this._store.dispatch(TodoActions.DeleteTodo({ id }))
+    public removeTodo(id) {
+        this.store.dispatch(TodoActions.DeleteTodo({ id }))
     }
 }

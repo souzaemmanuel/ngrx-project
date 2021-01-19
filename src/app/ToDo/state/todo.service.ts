@@ -1,12 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { from, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { ToDo } from '.';
 
 @Injectable({
     providedIn: 'root'
 })
-export class ToDoHttpService {
+export class TodoService {
     constructor(private httpclient: HttpClient) { }
 
     getToDos(): Observable<ToDo[]> {

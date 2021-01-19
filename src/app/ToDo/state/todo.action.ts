@@ -2,37 +2,28 @@ import { Update } from '@ngrx/entity';
 import { createAction, props } from '@ngrx/store';
 import { ToDo } from './todo.model';
 
-export enum ActionTypes {
-  LoadTodos = '[Todo] Load Todos',
-  LoadTodosSuccess = '[Todo] Load Todos Success',
-  AddTodo = '[Todo] Add Todo',
-  UpdateTodo = '[Todo] Update Todo',
-  DeleteTodo = '[Todo] Delete Todo',
-  Error = '[ToDo] - Error'
-}
-
 export const LoadTodos = createAction(
-  ActionTypes.LoadTodos
+  '[Todo] Load Todos'
 );
 
 export const LoadTodosSuccess = createAction(
-  ActionTypes.LoadTodosSuccess,
+  '[Todo] Success to Load Todos',
   props<{ todos: ToDo[] }>()
 );
 
 export const AddTodo = createAction(
-  ActionTypes.AddTodo,
+  '[Todo] Add Todo',
   props<{ todo: ToDo }>()
 );
 
 export const UpdateTodo = createAction(
-  ActionTypes.UpdateTodo,
+  '[Todo] Update Todo',
   props<{ todo: Update<ToDo> }>()
 );
 
 export const DeleteTodo = createAction(
-  ActionTypes.DeleteTodo,
+  '[Todo] Delete Todo',
   props<{ id: number }>()
 );
 
-export const ErrorToDoAction = createAction(ActionTypes.Error, props<Error>());
+export const HttpErrorResponse = createAction('[ToDo] - Error', props<Error>());

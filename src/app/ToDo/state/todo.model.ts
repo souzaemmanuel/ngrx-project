@@ -4,11 +4,11 @@ export class ToDo {
   public completed: boolean;
   public text: string;
 
-  constructor(_text: string, _completed: boolean = false, _id?: number) {
+  constructor(text: string, completed: boolean = false, id?: number) {
     //If not comes id, create a random one
-    this.id = _id ? _id : Math.floor(Math.random() * 100);
-    this.completed = _completed;
-    this.text = _text;
+    this.id = id ? id : Math.floor(Math.random() * 100);
+    this.completed = completed;
+    this.text = text;
   }
 }
 export interface ToDos {
